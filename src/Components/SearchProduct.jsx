@@ -1,0 +1,66 @@
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  MDBCard,
+  MDBCardBody,
+  MDBCardTitle,
+  MDBCardText,
+  MDBCardImage,
+  MDBBtn,
+  MDBContainer,
+  MDBRow,
+  MDBCol
+} from "mdb-react-ui-kit";
+import { cartItemActions } from "../features/cartItemSlice";
+
+const SearchProduct = () => {
+  const { filteredProducts, searchProduct } = useSelector((state) => state.cartItem);
+  const dispatch = useDispatch()
+
+  if (filteredProducts.length === 0) {
+    return <p>No products found for "{searchProduct}"</p>;
+  }
+
+  return (
+    <MDBContainer fluid>
+      <h2 className="text-center my-4">Search Results for: {searchProduct}</h2>
+      <MDBRow className="mb-4">
+        {filteredProducts.map((product) => (
+          <MDBCol size="12" md="6" lg="4" key={product.id} className="mb-4 d-flex">
+            <MDBCard className="h-100 d-flex flex-column">
+              <MDBCardImage
+                src={product.image}
+                position="top"
+                alt={product.title}
+                style={{ height: "250px", objectFit: "contain" }}
+              />
+              <MDBCardBody className="d-flex flex-column">
+                <MDBCardTitle className="mb-2" style={{ fontSize: "1rem" }}><strong>{product.title}</strong></MDBCardTitle>
+                <MDBCardText className="flex-grow-1"
+                  style={{
+                    fontSize: "0.85rem",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 3,
+                    WebkitBoxOrient: "vertical",
+                  }}>
+                  {product.description}
+                </MDBCardText>
+                <span><strong>${product.price}</strong></span>
+                <MDBBtn
+                  className="mt-auto"
+                  onClick={() => dispatch(cartItemActions.addCartItem(product))}
+                >
+                  Add To Cart
+                </MDBBtn>
+              </MDBCardBody>
+            </MDBCard>
+          </MDBCol>
+        ))}
+      </MDBRow>
+    </MDBContainer>
+  );
+};
+
+export default SearchProduct;
